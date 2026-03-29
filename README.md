@@ -1,132 +1,104 @@
-# 📈 Time Series Forecasting & Machine Learning on Stock Data
+# Google Stock Return Forecasting — SARIMAX + ML Models
 
-## 🚀 Project Overview
-The primary goal of this project is to **compare the performance and behavior of different forecasting models** on financial time series data.
-
-This project explores both:
-- **Traditional statistical models (ARIMA, SARIMA)**
-- **Modern machine learning models (Random Forest, Gradient Boosting, XGBoost, Voting Regressor)**
-
-The workflow includes:
-- Rigorous data preprocessing  
-- Stationarity testing  
-- Feature engineering  
-- Multi-model implementation  
-- Performance comparison  
-
-The objective is to better understand **stock price dynamics and predictive patterns**.
+**Project completed:** March 2026  
+**Tools:** Python · Statsmodels · Scikit-learn · Pandas · Matplotlib  
+**Domain:** Time Series Forecasting · Financial Data · Machine Learning
 
 ---
 
-## 📊 Dataset
-The dataset consists of historical stock price data for **Google (GOOGL)**.
+## Overview
 
-### Features include:
-- **OHLC Data**: Open, High, Low, Close prices  
-- **Volume**: Trading volume  
-- **Returns**:
-  - Daily returns  
-  - Intraday returns  
+An end-to-end time series forecasting system built on 2 years of Google (GOOGL) stock data.  
+The project compares statistical models (SARIMAX) against machine learning models (Random Forest, XGBoost)  
+to forecast **daily stock returns** — not raw prices, which are inherently non-stationary.
 
----
-
-## 🛠️ Tech Stack
-- **Language**: Python  
-- **Data Analysis**: Pandas, NumPy  
-- **Visualization**: Matplotlib, Seaborn  
-- **Statistical Modeling**: Statsmodels  
-  - ADF Test  
-  - ARIMAX  
-  - SARIMAX  
-- **Machine Learning**:  
-  - Scikit-learn
-  - Random Forest
-  - XGBoost
-  - Grafient Boosting
+**Key result:** Random Forest achieved **R² = 0.8489** on the test set,  
+significantly outperforming the SARIMAX baseline.
 
 ---
 
-## 📈 Methodology
+## Problem Statement
 
-### 1. Exploratory Data Analysis (EDA)
-- Visualized price trends and volatility  
-- Identified patterns in stock movement  
-- Built features to capture **market behavior**
-
-### Feature Engineering:
-- Lag features (previous time steps)
-- Return features
-- Rolling window statistics  
-- Volatility-based features  
-
-### Stationarity Testing:
-- Applied **Augmented Dickey-Fuller (ADF) Test**  
-- Ensured data suitability for statistical models  
+Raw stock prices are non-stationary and highly autocorrelated — making direct price prediction  
+misleading and statistically invalid. This project pivots to **return-based forecasting**,  
+which is both more statistically sound and more practically useful for trading decisions.
 
 ---
 
-### 2. Traditional Statistical Models
+## Methodology
 
-#### 🔹 ARIMAX (AutoRegressive Integrated Moving Average with exogenous variables)
-- Captures **linear dependencies** in time series  
-- Handles non-stationarity using differencing  
+### 1. Stationarity & Causality Testing
+- Applied **ADF Test** to confirm non-stationarity of raw prices
+- Transformed to log returns to achieve stationarity
+- Used **Granger Causality Test** to identify valid lag-based exogenous features
 
-#### 🔹 SARIMAX (Seasonal ARIMA with exogenous variables)
-- Extends ARIMA to model:
-  - Seasonality  
-  - Trend components  
+### 2. Feature Engineering
+- Lag features (returns at t-1, t-2, t-5)
+- Rolling volatility (7-day, 14-day standard deviation)
+- Momentum indicators
+- Volume-price interaction features
+- Technical indicators (moving averages, rate of change)
 
----
+### 3. Models Compared
 
-### 3. Machine Learning Approaches
+| Model | Test R² |
+|---|---|
+| SARIMAX (baseline) | ~0.00 (near random on raw prices) |
+| SARIMAX on returns | Moderate |
+| Random Forest | **0.8489** |
+| XGBoost | Competitive |
 
-#### Feature Engineering for ML:
-- `Volatility_ratio`  
-- `Gap_Return`  
-- Lag variables:
-  - `Close_Return_lag1`  
-  - `High_Return_lag6`  
-- Rolling statistics (mean, std)
-- etc
-
----
-
-#### 🌲 Random Forest Regressor
-- Ensemble learning method  
-- Captures **non-linear relationships**  
-- Robust to noise  
+### 4. Validation Strategy
+- **TimeSeriesSplit cross-validation** (no data leakage)
+- Walk-forward validation to simulate real forecasting conditions
 
 ---
 
-#### ⚡ XGBoost , Gradient Boosting
-- Gradient boosting algorithm  
-- High performance and efficiency  
-- Provides **feature importance insights**  
+## Key Findings
+
+- **Feature engineering > model tuning** in financial time series
+- Transforming prices to returns was the single biggest performance jump (R² from -10 to 0.84)
+- Random Forest handled non-linearity and feature interactions better than SARIMAX
+- Volatility and lag features were the most important predictors (confirmed via feature importance plot)
 
 ---
 
-## 🔑 Key Features & Insights
+## Repository Structure
 
-### 📌 Important Predictors Identified:
-- **Short-term Momentum**:
-  - Strong influence of 1-day lag features  
-  - Intraday returns are highly predictive  
-
-- **Volatility Metrics**:
-  - 2-day, 5-day, and 10-day volatility ratios  
-  - Key drivers of price fluctuations  
-
----
-
-### 📊 Performance Comparison
-
-| Model          | Strengths                                    |
-|----------------|----------------------------------------------|
-| ARIMA / SARIMA | Interpretable, handles trend & seasonality   |
-| Random Forest  | Captures non-linear relationships            |
-| XGBoost        | High accuracy, feature importance insights   |
-| Gradient Boost | Better accuracy, feature importance insights |
+```
+google-stock-forecasting/
+├── google_stock_forecasting.ipynb       # Full analysis notebook
+├── google_2year_data.xls                # GOOGL historical data (2 years)
+├── google_stock_full_documentation.pdf  # Detailed project report
+└── README.md
+```
 
 ---
 
-# google-stock-forecasting
+## How to Run
+
+1. Clone the repository
+```bash
+git clone https://github.com/Dev-2004-DA/google-stock-forecasting.git
+```
+
+2. Install dependencies
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn statsmodels xgboost
+```
+
+3. Open the notebook
+```bash
+jupyter notebook google_stock_forecasting.ipynb
+```
+
+---
+
+## Skills Demonstrated
+
+`Time Series Analysis` `SARIMAX` `Random Forest` `XGBoost` `Feature Engineering`  
+`Granger Causality` `ADF Test` `TimeSeriesSplit` `Python` `Scikit-learn` `Statsmodels`
+
+---
+
+*Part of my Data Analytics portfolio — [github.com/Dev-2004-DA](https://github.com/Dev-2004-DA)*
